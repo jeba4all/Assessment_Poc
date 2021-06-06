@@ -1,0 +1,5 @@
+[masters]
+masters.k8.com 
+
+[workers]
+40.76.47.169

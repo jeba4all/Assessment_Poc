@@ -1,0 +1,10 @@
+[
+   {
+      "DEPLOYMENTNAME":"d1",
+      "IMAGENAME":"i1"
+   },
+   {
+      "DEPLOYMENTNAME":"d2",
+      "IMAGENAME":"i2"
+   }
+]

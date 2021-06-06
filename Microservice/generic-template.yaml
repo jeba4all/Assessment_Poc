@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: %DEPLOYMENT%
+  namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: %DEPLOYMENT%
+  template:
+    metadata:
+      labels:
+        app: %DEPLOYMENT%
+    spec:
+      containers:
+      - name: %DEPLOYMENT%
+        image: %IMAGENAME%
+        ports:
+        - containerPort: 8080
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: %DEPLOYMENT%
+  namespace: demo
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: %DEPLOYMENT%
+  type: LoadBalancer
