@@ -21,7 +21,7 @@ For deployment of all multiple production microserice images using automation pr
     
 
 Provided with the Jenkins script to execute the complete above process in stages using jenkins pipeline.
-node(
+node()
 	Stage('Checkout'){
 		sh'''
 			checkout([$class: 'GitSCM', branch: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir:'kubernetes']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '*** jenkins credentals ID ***', url: 'https://github.com/jeba4all/Prodapt_Poc.git']]])
