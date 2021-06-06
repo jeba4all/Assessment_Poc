@@ -48,9 +48,10 @@ node(
 			'''
 			}
 			
-	Stage('yamllint Test'){
+	Stage('yamllint & kubeval Test'){
 		sh'''
 			cd $WORKSPACE/kubernetes/SampleService
+			kubeval sample.yml
 			yamllint sample.yml
 			'''
 			)
