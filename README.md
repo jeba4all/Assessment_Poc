@@ -1,8 +1,8 @@
-# Assessment_Poc
-Kubernetes Provision using Ansible
+# Kubernetes Provision using Ansible
+### This is to install Kubenetes cluster using Ansible and install dashboard packages, helm packages, Ingress Controller, Loadbalancer, Sample demo service and Ingress file for DNS configuration.
+## Installation
 
-This is to install Kubenetes cluster using Ansible and install dashboard packages, helm packages, Ingress Controller, Loadbalancer, Sample demo service and Ingress file for DNS configuration.
-
+```
 1.Clone the Git Url
 2.Move to Ansible folder and change the inventary entry based on your workspace path.
 3.Add the master and host entry to the hosts files based on the clsuter nodes used and verify for internal connectivities.
@@ -13,14 +13,21 @@ This is to install Kubenetes cluster using Ansible and install dashboard package
 8.Follow the steps inside --> Scripts/helm.sh to install helm 3 on the machine and add helm repo to the clsuter and to perform Ingress Controller.
 9.Execute the steps under --> Loadbalancer/loadbalancer.sh to download metallb and install pods,serviceaccounts,deployments,roles,rolebindings under metallb-system namesapce to provide Loadbalancer ip to the service.
 10.Execute the scriptes under --> SampleService/sample.sh to install a demo application pod,svc and ingress file to map the DNS for the demo as demo.example.com.
-
+```
+## Multi Microservice Deployment
 For deployment of all multiple production microserice images using automation provided a script under -->Microservice/deployment.sh
+
+```sh
     1.Make a enry to the input.json file with deployments and Images of productions available.
     2.Verify the generic-template.yaml based on your microservices kubernetes yaml file.
     3.Execute deployment.sh script to parse input key value from input.json file to the generic yaml and perform and remove to the n key values available in json input.
-    
+```
+
+## Sample Jenkins
 
 Provided with the Jenkins script to execute the complete above process in stages using jenkins pipeline.
+
+```sh
 node()
 	Stage('Checkout'){
 		sh'''
