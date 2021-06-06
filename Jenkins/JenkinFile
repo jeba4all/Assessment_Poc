@@ -1,0 +1,65 @@
+node(
+	Stage('Checkout'){
+		sh'''
+			checkout([$class: 'GitSCM', branch: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir:'kubernetes']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '*** jenkins credentals ID ***', url: 'https://github.com/jeba4all/Prodapt_Poc.git']]])
+		  '''
+		  }
+		  
+	Stage('Kubernetes Cluster Creation'){
+		sh'''
+			cd $WORKSPACE/kubernetes/Ansible
+			ansible-playbook kube-dependencies.yml
+			ansible-playbook k8s-master.yml
+			ansible-playbook k8s-workers.yml
+			'''
+			}
+			
+	Stage('Dashboard for Service and Cluster metrics'){
+		sh'''
+			kubectl -n kube-system create sa dashboard
+			kubectl create clusterrolebinding dashboard --clusterrole cluster-admin --serviceaccount=kube-system:dashboard
+			kubectl -n kube-system get sa dashboard -o yaml
+			kubectl -n kube-system describe secrets dashboard-token-
+			kubectl proxy &
+			'''
+			)
+	
+	stage('Helm Installation & Ingress Package')(
+		sh'''
+			curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+			chmod 700 get_helm.sh
+			./get_helm.sh
+			helm version
+			helm repo add nginx-stable https://helm.nginx.com/stable
+			helm repo update
+			helm install my-release nginx-stable/nginx-ingress
+			'''
+			}
+		
+	stage('LoadBalacer MetalLB'){
+		sh'''
+			cd $WORKSPACE/kubernetes/LoadBalacer
+			kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.9.3/manifests/namespace.yaml
+			kubectl get ns
+			kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.9.3/manifests/metallb.yaml
+			kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+			kubectl get all -n metallb-system
+			kubectl apply -f config.yaml
+			'''
+			}
+			
+	Stage('yamllint Test'){
+		sh'''
+			cd $WORKSPACE/kubernetes/SampleService
+			yamllint sample.yml
+			'''
+			)
+			
+	Stage('sample Demo Service'){
+		sh'''
+			cd $WORKSPACE/kubernetes/SampleService
+			kubectl apply -f sample.yml
+			kubectl get ingress --namespace demo
+			kubectl get svc --namespace demo
+			}
+	}
