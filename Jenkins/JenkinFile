@@ -1,4 +1,5 @@
-node(
+node('machine')
+{
 	Stage('Checkout'){
 		sh'''
 			checkout([$class: 'GitSCM', branch: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir:'kubernetes']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '*** jenkins credentals ID ***', url: 'https://github.com/jeba4all/Prodapt_Poc.git']]])
@@ -64,3 +65,4 @@ node(
 			kubectl get svc --namespace demo
 			}
 	}
+}
