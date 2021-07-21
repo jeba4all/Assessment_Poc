@@ -1,0 +1,28 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.Dep.namespace }}
+  name: {{ .Values.Dep.label }}
+spec:
+  replicas: {{ .Values.Dep.replicaCount }}
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Dep.label }}
+    spec:
+      containers:
+      - name: {{ .Values.Dep.label }}
+        image: {{ .Values.Dep.image.repo }}:{{ .Values.Dep.image.tag }}
+        ports:
+        - containerPort: {{ .Values.Dep.container_port }}
+        resources:
+          requests:
+            cpu: {{ .Values.Dep.resources.requests.cpu }}
+          limits:
+            cpu: {{ .Values.Dep.resources.limits.cpu }}
